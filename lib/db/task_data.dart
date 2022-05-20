@@ -1,10 +1,8 @@
-import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:todo_app/db/boxes.dart';
 import 'package:todo_app/models/task.dart';
-import 'dart:collection';
 
 class TaskData extends ChangeNotifier {
   static List<Task> task = Boxes.getTasks().values.toList().cast<Task>();
@@ -31,8 +29,8 @@ class TaskData extends ChangeNotifier {
     notifyListeners();
   }
 
-  void updateTask(dynamic key, String title, bool done) {
-    Boxes.getTasks().putAt(key,Task() ..name = title ..isDone = done?false:true);
+  void updateTask(dynamic key, String title, bool done) async {
+    await Boxes.getTasks().putAt(key,Task() ..name = title ..isDone = done?false:true);
     notifyListeners();
   }
 }
