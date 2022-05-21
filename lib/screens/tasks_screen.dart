@@ -118,9 +118,9 @@ class _TasksScreenState extends State<TasksScreen> {
                   height: 10.0,
                 ),
                 SwipeTo(
+                  iconOnLeftSwipe: Icons.arrow_right_sharp,
+                  iconOnRightSwipe: Icons.arrow_left_sharp,
                   iconColor: Colors.white,
-                  iconOnLeftSwipe: const IconData(5),
-                  iconOnRightSwipe: const IconData(5),
                   animationDuration: const Duration(milliseconds: 230),
                   onRightSwipe: () {
                     setState(() {

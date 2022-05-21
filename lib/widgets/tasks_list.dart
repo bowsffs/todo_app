@@ -19,7 +19,8 @@ class _TasksListState extends State<TasksList> {
     return Consumer<TaskData>(builder: (context, taskData, child) {
       return ListView.builder(
         controller: widget.controller,
-        padding: const EdgeInsets.only(bottom: kFloatingActionButtonMargin + 75),
+        padding:
+            const EdgeInsets.only(bottom: kFloatingActionButtonMargin + 65),
         itemBuilder: (context, index) {
           final task = TaskData.task[index];
           return TaskTile(
