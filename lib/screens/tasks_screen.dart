@@ -81,10 +81,6 @@ class _TasksScreenState extends State<TasksScreen> {
     super.dispose();
   }
 
-  String getTaskCountString(int num) {
-    return num == 0 ? 'شما فعالیتی ندارید!' : '$num فعالیت';
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -95,7 +91,7 @@ class _TasksScreenState extends State<TasksScreen> {
         onPressed: () async {
           await showModalBottomSheet(
             context: context,
-            builder: (context) => AddTaskScreen(),
+            builder: (context) => const AddTaskScreen(),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20.0),
             ),
@@ -146,7 +142,7 @@ class _TasksScreenState extends State<TasksScreen> {
                   height: 10.0,
                 ),
                 Text(
-                  getTaskCountString(Provider.of<TaskData>(context).taskCount),
+                  '${Provider.of<TaskData>(context).taskCount} فعالیت',
                   textDirection: TextDirection.rtl,
                   style: const TextStyle(
                     color: Colors.white,
