@@ -40,7 +40,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                     setState(() {
                       _text.clear();
                     });
-                    return 'فعالیت نمی تواند خالی باشد!';
+                    return 'فعالیت جدید نمی تواند خالی باشد!';
                   }
                   return null;
                 },
