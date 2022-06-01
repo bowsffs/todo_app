@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart' show Colors, Color;
+import 'package:flutter/material.dart' show Color;
 import 'package:todo_app/db/boxes.dart';
 import 'package:todo_app/models/color.dart';
 

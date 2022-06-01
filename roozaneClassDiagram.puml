@@ -1,27 +1,152 @@
 @startuml
-'https://plantuml.com/class-diagram
+set namespaceSeparator ::
 
-abstract class AbstractList
-abstract AbstractCollection
-interface List
-interface Collection
-
-List <|-- AbstractList
-Collection <|-- AbstractCollection
-
-Collection <|- List
-AbstractCollection <|- AbstractList
-AbstractList <|-- ArrayList
-
-class ArrayList {
-Object[] elementData
-size()
+class "todo_app::db::boxes.dart::Boxes" {
+  {static} +Box<Task> getTasks()
+  {static} +Box<ColorSchemeRoozane> getColor()
+  {static} +Box<StateRoozane> getState()
 }
 
-enum TimeUnit {
-DAYS
-HOURS
-MINUTES
+class "todo_app::db::task_data.dart::TaskData" {
+  {static} +List<Task> task
+  +int taskCount
+  {static} +void refreshTasks()
+  +void addTask()
+  +void deleteTask()
+  +void updateTask()
 }
+
+"flutter::src::foundation::change_notifier.dart::ChangeNotifier" <|-- "todo_app::db::task_data.dart::TaskData"
+
+class "todo_app::main.dart::Roozane" {
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "todo_app::main.dart::Roozane"
+
+class "todo_app::models::color.dart::ColorSchemeRoozane" {
+  +int hex
+  +int index
+}
+
+"hive::src::object::hive_object.dart::HiveObject" <|-- "todo_app::models::color.dart::ColorSchemeRoozane"
+
+class "todo_app::models::color.dart::ColorSchemeRoozaneAdapter" {
+  +int typeId
+  +int hashCode
+  +ColorSchemeRoozane read()
+  +void write()
+  +bool ==()
+}
+
+"hive::hive.dart::TypeAdapter" <|-- "todo_app::models::color.dart::ColorSchemeRoozaneAdapter"
+
+class "todo_app::models::state.dart::StateRoozane" {
+  +bool appFirstTimeRun
+}
+
+"hive::src::object::hive_object.dart::HiveObject" <|-- "todo_app::models::state.dart::StateRoozane"
+
+class "todo_app::models::state.dart::StateRoozaneAdapter" {
+  +int typeId
+  +int hashCode
+  +StateRoozane read()
+  +void write()
+  +bool ==()
+}
+
+"hive::hive.dart::TypeAdapter" <|-- "todo_app::models::state.dart::StateRoozaneAdapter"
+
+class "todo_app::models::task.dart::Task" {
+  +String name
+  +bool isDone
+}
+
+"hive::src::object::hive_object.dart::HiveObject" <|-- "todo_app::models::task.dart::Task"
+
+class "todo_app::models::task.dart::TaskAdapter" {
+  +int typeId
+  +int hashCode
+  +Task read()
+  +void write()
+  +bool ==()
+}
+
+"hive::hive.dart::TypeAdapter" <|-- "todo_app::models::task.dart::TaskAdapter"
+
+class "todo_app::screens::add_task_screen.dart::AddTaskScreen" {
+  +State<AddTaskScreen> createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "todo_app::screens::add_task_screen.dart::AddTaskScreen"
+
+class "todo_app::screens::add_task_screen.dart::_AddTaskScreenState" {
+  -TextEditingController _text
+  -GlobalKey<FormState> _formKey
+  +bool obsecure
+  +Widget build()
+}
+
+"todo_app::screens::add_task_screen.dart::_AddTaskScreenState" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+"todo_app::screens::add_task_screen.dart::_AddTaskScreenState" o-- "flutter::src::widgets::framework.dart::GlobalKey<FormState>"
+"flutter::src::widgets::framework.dart::State" <|-- "todo_app::screens::add_task_screen.dart::_AddTaskScreenState"
+
+class "todo_app::screens::tasks_screen.dart::TasksScreen" {
+  +State<TasksScreen> createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "todo_app::screens::tasks_screen.dart::TasksScreen"
+
+class "todo_app::screens::tasks_screen.dart::_TasksScreenState" {
+  -ScrollController _controller
+  -void _scrollDown()
+  -void _scrollUp()
+  +void initState()
+  +void dispose()
+  +Widget build()
+}
+
+"todo_app::screens::tasks_screen.dart::_TasksScreenState" o-- "flutter::src::widgets::scroll_controller.dart::ScrollController"
+"flutter::src::widgets::framework.dart::State" <|-- "todo_app::screens::tasks_screen.dart::_TasksScreenState"
+
+class "todo_app::themes::app_color.dart::AppColor" {
+  {static} -List<int> _allPrimaryColors
+  {static} +int currentColorHex
+  {static} +Color currentAppColor
+  {static} +int index
+  {static} -int _incrementIndex()
+  {static} -int _decrementIndex()
+  {static} +void nextColor()
+  {static} +void previousColor()
+}
+
+"todo_app::themes::app_color.dart::AppColor" o-- "dart::ui::Color"
+
+class "todo_app::widgets::tasks_list.dart::TasksList" {
+  +ScrollController? controller
+  +State<TasksList> createState()
+}
+
+"todo_app::widgets::tasks_list.dart::TasksList" o-- "flutter::src::widgets::scroll_controller.dart::ScrollController"
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "todo_app::widgets::tasks_list.dart::TasksList"
+
+class "todo_app::widgets::tasks_list.dart::_TasksListState" {
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::State" <|-- "todo_app::widgets::tasks_list.dart::_TasksListState"
+
+class "todo_app::widgets::task_tile.dart::TaskTile" {
+  +bool? isChecked
+  +String taskTitle
+  +dynamic Function(bool?)? checkboxCallback
+  +dynamic Function()? longPressCallBack
+  +Widget build()
+}
+
+"todo_app::widgets::task_tile.dart::TaskTile" o-- "null::dynamic Function(bool)"
+"todo_app::widgets::task_tile.dart::TaskTile" o-- "null::dynamic Function()"
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "todo_app::widgets::task_tile.dart::TaskTile"
+
 
 @enduml

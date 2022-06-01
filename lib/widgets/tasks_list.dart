@@ -13,7 +13,6 @@ class TasksList extends StatefulWidget {
 }
 
 class _TasksListState extends State<TasksList> {
-  final ScrollController _scrollController = ScrollController();
   @override
   Widget build(BuildContext context) {
     return Consumer<TaskData>(builder: (context, taskData, child) {
