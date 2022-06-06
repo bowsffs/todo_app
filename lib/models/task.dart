@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 
 part 'task.g.dart';
@@ -8,5 +9,5 @@ class Task extends HiveObject {
   late String name;
 
   @HiveField(1)
-  late bool isDone = false;
+  bool isDone = false;
 }

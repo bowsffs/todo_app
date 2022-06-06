@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:todo_app/screens/tasks_screen.dart';
 import 'package:todo_app/themes/app_color.dart';
 import 'package:provider/provider.dart';
-import 'package:todo_app/db/task_data.dart';
+import 'package:todo_app/modules/task_handler.dart';
 
 class AddTaskScreen extends StatefulWidget {
-  const AddTaskScreen({Key? key}) : super(key: key);
+  AddTaskScreen({Key? key}) : super(key: key);
 
   @override
   State<AddTaskScreen> createState() => _AddTaskScreenState();
@@ -96,8 +97,9 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
               onPressed: () {
                 if (_formKey.currentState!.validate()) {
                   Provider.of<TaskData>(context, listen: false)
-                      .addTask(_text.text);
+                      .addTask(_text.text.trim());
                   TaskData.refreshTasks();
+
                   Navigator.pop(context);
                 }
               },

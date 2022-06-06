@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:todo_app/models/color.dart';
 import 'package:todo_app/models/state.dart';
+import 'package:todo_app/modules/notification_handler.dart';
 import 'package:todo_app/widgets/tasks_list.dart';
 import 'package:todo_app/screens/add_task_screen.dart';
 import 'package:todo_app/models/task.dart';
 import 'package:todo_app/themes/app_color.dart';
 import 'package:provider/provider.dart';
-import 'package:todo_app/db/task_data.dart';
+import 'package:todo_app/modules/task_handler.dart';
 import 'package:hive/hive.dart';
 import 'package:swipe_to/swipe_to.dart';
 import 'package:todo_app/db/boxes.dart';
@@ -64,6 +65,10 @@ class _TasksScreenState extends State<TasksScreen> {
         ..name =
             'وقتی فعالیت خود را انجام دادید تیک آن را بزنید تا آن فعالیت خط زده شود'
         ..isDone = false);
+      Boxes.getTasks().add(Task()
+        ..name =
+            'برای فعال کردن اعلان فعالیت بر روی اعلان ضربه زده و تاریخ اعلان را مشخص نمایید'
+        ..isDone = false);
       Boxes.getColor().add(ColorSchemeRoozane()
         ..hex = 0xFF009688
         ..index = 5);
@@ -72,6 +77,20 @@ class _TasksScreenState extends State<TasksScreen> {
     }
 
     super.initState();
+    NotificationApi.init();
+    listenNotifications();
+  }
+
+  void listenNotifications() {
+    NotificationApi.onNotifications.stream.listen(onClickedNotification);
+  }
+
+  void onClickedNotification(String? payload) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => TasksScreen(),
+      ),
+    );
   }
 
   @override
@@ -91,7 +110,7 @@ class _TasksScreenState extends State<TasksScreen> {
         onPressed: () async {
           await showModalBottomSheet(
             context: context,
-            builder: (context) => const AddTaskScreen(),
+            builder: (context) => AddTaskScreen(),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20.0),
             ),
@@ -197,7 +216,8 @@ class _TasksScreenState extends State<TasksScreen> {
           ),
           Expanded(
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              padding:
+                  const EdgeInsets.only(left: 10.0, right: 10.0, top: 10.0),
               decoration: const BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.only(

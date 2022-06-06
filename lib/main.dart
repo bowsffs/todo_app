@@ -4,9 +4,9 @@ import 'package:todo_app/models/task.dart';
 import 'package:todo_app/models/color.dart';
 import 'package:todo_app/screens/tasks_screen.dart';
 import 'package:provider/provider.dart';
-import 'package:todo_app/db/task_data.dart';
+import 'package:todo_app/modules/task_handler.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:dcdg/dcdg.dart';
+import 'package:timezone/data/latest.dart' as tz;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,6 +19,8 @@ void main() async {
   await Hive.openBox<Task>('tasks');
   await Hive.openBox<ColorSchemeRoozane>('color');
   await Hive.openBox<StateRoozane>('state');
+
+  tz.initializeTimeZones();
 
   runApp(Roozane());
 }
