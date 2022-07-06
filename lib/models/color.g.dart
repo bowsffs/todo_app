@@ -16,19 +16,15 @@ class ColorSchemeRoozaneAdapter extends TypeAdapter<ColorSchemeRoozane> {
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return ColorSchemeRoozane()
-      ..hex = fields[0] as int
-      ..index = fields[1] as int;
+    return ColorSchemeRoozane()..hex = fields[0] as int;
   }
 
   @override
   void write(BinaryWriter writer, ColorSchemeRoozane obj) {
     writer
-      ..writeByte(2)
-      ..writeByte(0)
-      ..write(obj.hex)
       ..writeByte(1)
-      ..write(obj.index);
+      ..writeByte(0)
+      ..write(obj.hex);
   }
 
   @override

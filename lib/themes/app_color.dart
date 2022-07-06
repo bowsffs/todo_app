@@ -5,7 +5,7 @@ import 'package:todo_app/models/color.dart';
 class AppColor {
   AppColor._();
 
-  static const List<int> _allPrimaryColors = [
+  static const List<int> allPrimaryColors = [
     0xFFF44336, //ghermez
     0xFFFF9800, //narangi
     0xFF4CAF50, //sabz kam rang mat
@@ -22,75 +22,16 @@ class AppColor {
 
   static int currentColorHex =
       Boxes.getColor().values.toList().cast<ColorSchemeRoozane>()[0].hex;
+
   static Color currentAppColor = Color(currentColorHex);
-  static int index =
-      Boxes.getColor().values.toList().cast<ColorSchemeRoozane>()[0].index;
 
-  static int _incrementIndex() {
-    index = index + 1;
-    return index;
-  }
+  static void changeAppColor(int colorIndex) {
+    currentColorHex = allPrimaryColors[colorIndex];
+    currentAppColor = Color(currentColorHex);
 
-  static int _decrementIndex() {
-    index = index - 1;
-    return index;
-  }
+    final dynamic key =
+        Boxes.getColor().values.toList().cast<ColorSchemeRoozane>()[0].key;
 
-  static void nextColor() {
-    if (index < _allPrimaryColors.length - 1) {
-      currentColorHex = _allPrimaryColors[_incrementIndex()];
-      currentAppColor = Color(currentColorHex);
-
-      final dynamic keyy =
-          Boxes.getColor().values.toList().cast<ColorSchemeRoozane>()[0].key;
-
-      Boxes.getColor().putAt(
-          keyy,
-          ColorSchemeRoozane()
-            ..hex = currentColorHex
-            ..index = index);
-    } else {
-      index = 0;
-      currentColorHex = _allPrimaryColors[0];
-      currentAppColor = Color(currentColorHex);
-
-      final dynamic keyy =
-          Boxes.getColor().values.toList().cast<ColorSchemeRoozane>()[0].key;
-
-      Boxes.getColor().putAt(
-          keyy,
-          ColorSchemeRoozane()
-            ..hex = currentColorHex
-            ..index = index);
-    }
-  }
-
-  static void previousColor() {
-    if (index > 0) {
-      currentColorHex = _allPrimaryColors[_decrementIndex()];
-      currentAppColor = Color(currentColorHex);
-
-      final dynamic keyy =
-          Boxes.getColor().values.toList().cast<ColorSchemeRoozane>()[0].key;
-
-      Boxes.getColor().putAt(
-          keyy,
-          ColorSchemeRoozane()
-            ..hex = currentColorHex
-            ..index = index);
-    } else {
-      currentColorHex = _allPrimaryColors[_allPrimaryColors.length - 1];
-      currentAppColor = Color(currentColorHex);
-      index = _allPrimaryColors.length - 1;
-
-      final dynamic keyy =
-          Boxes.getColor().values.toList().cast<ColorSchemeRoozane>()[0].key;
-
-      Boxes.getColor().putAt(
-          keyy,
-          ColorSchemeRoozane()
-            ..hex = currentColorHex
-            ..index = index);
-    }
+    Boxes.getColor().putAt(key, ColorSchemeRoozane()..hex = currentColorHex);
   }
 }

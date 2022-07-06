@@ -1,8 +1,8 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:todo_app/db/boxes.dart';
 import 'package:todo_app/models/task.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 class TaskData extends ChangeNotifier {
   static List<Task> task = Boxes.getTasks().values.toList().cast<Task>();
@@ -30,7 +30,19 @@ class TaskData extends ChangeNotifier {
   }
 
   void updateTask(dynamic key, String title, bool done) async {
-    await Boxes.getTasks().putAt(key,Task() ..name = title ..isDone = done?false:true);
+    await Boxes.getTasks().putAt(
+        key,
+        Task()
+          ..name = title
+          ..isDone = done ? false : true);
     notifyListeners();
+  }
+
+  void deleteAllTasks() async {
+    List<dynamic> keyList = [];
+    for (var task in task) {
+      keyList.add(task.key);
+    }
+    await Boxes.getTasks().deleteAll(keyList);
   }
 }

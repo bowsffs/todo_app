@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:todo_app/screens/tasks_screen.dart';
 import 'package:todo_app/themes/app_color.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_app/modules/task_handler.dart';
 
 class AddTaskScreen extends StatefulWidget {
-  AddTaskScreen({Key? key}) : super(key: key);
+  const AddTaskScreen({Key? key}) : super(key: key);
 
   @override
   State<AddTaskScreen> createState() => _AddTaskScreenState();

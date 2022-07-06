@@ -9,8 +9,9 @@ import 'package:todo_app/themes/app_color.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_app/modules/task_handler.dart';
 import 'package:hive/hive.dart';
-import 'package:swipe_to/swipe_to.dart';
 import 'package:todo_app/db/boxes.dart';
+import 'package:todo_app/widgets/circle_button.dart';
+import 'package:todo_app/screens/pick_color_screen.dart';
 
 class TasksScreen extends StatefulWidget {
   @override
@@ -38,44 +39,7 @@ class _TasksScreenState extends State<TasksScreen> {
 
   @override
   void initState() {
-    late List<StateRoozane> state;
-    if (Boxes.getState().isEmpty) {
-      Boxes.getState().add(StateRoozane()..appFirstTimeRun = false);
-      state = Boxes.getState().values.toList().cast<StateRoozane>();
-    } else {
-      state = Boxes.getState().values.toList().cast<StateRoozane>();
-    }
-
-    if (!state[0].appFirstTimeRun) {
-      Boxes.getTasks().add(Task()
-        ..name =
-            'با کشیدن اسم برنامه به سمت چپ و یا راست می توانید تم برنامه را تغییر دهید'
-        ..isDone = false);
-      Boxes.getTasks().add(Task()
-        ..name = 'با استفاده از دکمه پلاس می توانید یک فعالیت جدید اضافه کنید'
-        ..isDone = false);
-      Boxes.getTasks().add(Task()
-        ..name =
-            'با نگه داشتن انگشت خود بر روی یک فعالیت می توانید آن را حذف کنید'
-        ..isDone = false);
-      Boxes.getTasks().add(Task()
-        ..name = 'با دکمه های بالا و پایین به اول و آخر لیست طولانی خود بروید'
-        ..isDone = false);
-      Boxes.getTasks().add(Task()
-        ..name =
-            'وقتی فعالیت خود را انجام دادید تیک آن را بزنید تا آن فعالیت خط زده شود'
-        ..isDone = false);
-      Boxes.getTasks().add(Task()
-        ..name =
-            'برای فعال کردن اعلان فعالیت بر روی اعلان ضربه زده و تاریخ اعلان را مشخص نمایید'
-        ..isDone = false);
-      Boxes.getColor().add(ColorSchemeRoozane()
-        ..hex = 0xFF009688
-        ..index = 5);
-      Boxes.getState()
-          .putAt(state[0].key, StateRoozane()..appFirstTimeRun = true);
-    }
-
+    _firstTimeRun();
     super.initState();
     NotificationApi.init();
     listenNotifications();
@@ -110,7 +74,7 @@ class _TasksScreenState extends State<TasksScreen> {
         onPressed: () async {
           await showModalBottomSheet(
             context: context,
-            builder: (context) => AddTaskScreen(),
+            builder: (context) => const AddTaskScreen(),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20.0),
             ),
@@ -125,36 +89,17 @@ class _TasksScreenState extends State<TasksScreen> {
         children: [
           Container(
             padding: const EdgeInsets.only(
-                top: 60.0, left: 30.0, bottom: 30.0, right: 30.0),
+                top: 35.0, left: 30.0, bottom: 20.0, right: 30.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                const SizedBox(
-                  height: 10.0,
-                ),
-                SwipeTo(
-                  iconOnLeftSwipe: Icons.arrow_right_sharp,
-                  iconOnRightSwipe: Icons.arrow_left_sharp,
-                  iconColor: Colors.white,
-                  animationDuration: const Duration(milliseconds: 230),
-                  onRightSwipe: () {
-                    setState(() {
-                      AppColor.previousColor();
-                    });
-                  },
-                  onLeftSwipe: () {
-                    setState(() {
-                      AppColor.nextColor();
-                    });
-                  },
-                  child: const Text(
-                    'روزانه',
-                    textDirection: TextDirection.rtl,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 50.0,
-                      fontWeight: FontWeight.bold,
-                    ),
+                const Text(
+                  'روزانه',
+                  textDirection: TextDirection.rtl,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 50.0,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
                 const SizedBox(
@@ -172,42 +117,100 @@ class _TasksScreenState extends State<TasksScreen> {
                   height: 10.0,
                 ),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   textDirection: TextDirection.rtl,
                   children: [
-                    GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          _scrollUp();
-                        });
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 4.0),
-                        child: CircleAvatar(
-                          radius: 15.0,
-                          backgroundColor: Colors.white,
-                          child: Icon(
-                            Icons.arrow_downward,
-                            size: 20.0,
-                            color: AppColor.currentAppColor,
+                    Row(
+                      textDirection: TextDirection.rtl,
+                      children: [
+                        CircleButton(
+                          circleIcon: Icons.arrow_downward_outlined,
+                          circleButtonFunc: () {
+                            _scrollUp();
+                          },
+                        ),
+                        SizedBox(
+                          width: 5.0,
+                        ),
+                        CircleButton(
+                          circleIcon: Icons.arrow_upward_outlined,
+                          circleButtonFunc: () {
+                            _scrollDown();
+                          },
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        CircleButton(
+                          circleIcon: Icons.brush_outlined,
+                          circleButtonFunc: () async {
+                            await showModalBottomSheet(
+                              context: context,
+                              builder: (context) => const PickColorScreen(),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                            ).then((value) {
+                              if (value != null) {
+                                setState(() {
+                                  AppColor.changeAppColor(value);
+                                });
+                              }
+                            });
+                          },
+                        ),
+                        SizedBox(
+                          width: 5.0,
+                        ),
+                        CircleButton(
+                          circleIcon: Icons.delete,
+                          circleButtonFunc: () async => await showDialog<void>(
+                            context: context,
+                            barrierDismissible: true, // user must tap button!
+                            builder: (BuildContext context) {
+                              return Directionality(
+                                textDirection: TextDirection.rtl,
+                                child: AlertDialog(
+                                  content: const Text(
+                                      "آیا تمام فعالیت ها حذف شوند؟"),
+                                  actions: <Widget>[
+                                    TextButton(
+                                      child: const Text(
+                                        'لغو',
+                                        style: TextStyle(color: Colors.black),
+                                      ),
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
+                                    TextButton(
+                                      child: Text(
+                                        'حذف',
+                                        style: TextStyle(
+                                            color: AppColor.currentAppColor),
+                                      ),
+                                      onPressed:
+                                          // () {
+                                          //   setState(() {
+                                          //     taskData.deleteTask(task.key);
+                                          //     TaskData.refreshTasks();
+                                          //   });
+                                          () {
+                                        setState(() {
+                                          TaskData().deleteAllTasks();
+                                          TaskData.refreshTasks();
+                                          Navigator.of(context).pop();
+                                        });
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
                           ),
                         ),
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          _scrollDown();
-                        });
-                      },
-                      child: CircleAvatar(
-                        radius: 15.0,
-                        backgroundColor: Colors.white,
-                        child: Icon(
-                          Icons.arrow_upward,
-                          size: 20.0,
-                          color: AppColor.currentAppColor,
-                        ),
-                      ),
+                      ],
                     ),
                   ],
                 ),
@@ -231,5 +234,44 @@ class _TasksScreenState extends State<TasksScreen> {
         ],
       ),
     );
+  }
+
+  void _firstTimeRun() {
+    late List<StateRoozane> state;
+    if (Boxes.getState().isEmpty) {
+      Boxes.getState().add(StateRoozane()..appFirstTimeRun = false);
+      state = Boxes.getState().values.toList().cast<StateRoozane>();
+    } else {
+      state = Boxes.getState().values.toList().cast<StateRoozane>();
+    }
+
+    if (!state[0].appFirstTimeRun) {
+      Boxes.getTasks().add(Task()
+        ..name =
+            'با کشیدن اسم برنامه به سمت چپ و یا راست می توانید تم برنامه را تغییر دهید'
+        ..isDone = false);
+      Boxes.getTasks().add(Task()
+        ..name = 'با استفاده از دکمه پلاس می توانید یک فعالیت جدید اضافه کنید'
+        ..isDone = false);
+      Boxes.getTasks().add(Task()
+        ..name =
+            'با نگه داشتن انگشت خود بر روی یک فعالیت می توانید آن را حذف کنید'
+        ..isDone = false);
+      Boxes.getTasks().add(Task()
+        ..name = 'با دکمه های بالا و پایین به اول و آخر لیست طولانی خود بروید'
+        ..isDone = false);
+      Boxes.getTasks().add(Task()
+        ..name =
+            'وقتی فعالیت خود را انجام دادید تیک آن را بزنید تا آن فعالیت خط زده شود'
+        ..isDone = false);
+      Boxes.getTasks().add(Task()
+        ..name =
+            'برای فعال کردن اعلان فعالیت بر روی اعلان ضربه زده و تاریخ اعلان را مشخص نمایید'
+        ..isDone = false);
+      Boxes.getColor()
+          .add(ColorSchemeRoozane()..hex = AppColor.allPrimaryColors[1]);
+      Boxes.getState()
+          .putAt(state[0].key, StateRoozane()..appFirstTimeRun = true);
+    }
   }
 }

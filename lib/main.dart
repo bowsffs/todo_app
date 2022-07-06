@@ -22,10 +22,12 @@ void main() async {
 
   tz.initializeTimeZones();
 
-  runApp(Roozane());
+  runApp(const Roozane());
 }
 
 class Roozane extends StatelessWidget {
+  const Roozane({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
