@@ -3,8 +3,6 @@ import 'package:todo_app/db/boxes.dart';
 import 'package:todo_app/models/color.dart';
 
 class AppColor {
-  AppColor._();
-
   static const List<int> allPrimaryColors = [
     0xFFF44336, //ghermez
     0xFFFF9800, //narangi
@@ -17,7 +15,7 @@ class AppColor {
     0xFF3F51B5, //toosi
     0xFF9E9E9E, // khakestari
     0xFF795548, // ghahveii
-    0xFF000000, //meshki
+    0xFF070606, //meshki
   ];
 
   static int currentColorHex =

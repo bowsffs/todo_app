@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:todo_app/db/boxes.dart';
 import 'package:todo_app/models/task.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 
 class TaskData extends ChangeNotifier {
   static List<Task> task = Boxes.getTasks().values.toList().cast<Task>();
@@ -11,14 +10,26 @@ class TaskData extends ChangeNotifier {
     return task.length;
   }
 
+  List get tasks {
+    return Boxes.getTasks().values.toList().cast<Task>();
+  }
+
+  Task getTaskByKey(key) {
+    var task = Boxes.getTasks().get(key);
+    if (task != null) {
+      return task;
+    }
+    return Task();
+  }
+
   static void refreshTasks() {
     task = Boxes.getTasks().values.toList().cast<Task>();
   }
 
-  void addTask(String newTaskTitle) async {
+  void addTask(String newTaskTitle, DateTime now) async {
     final newTask = Task()
       ..name = newTaskTitle
-      ..isDone = false;
+      ..initDate = now;
     final box = Boxes.getTasks();
     await box.add(newTask);
     notifyListeners();
@@ -29,12 +40,23 @@ class TaskData extends ChangeNotifier {
     notifyListeners();
   }
 
-  void updateTask(dynamic key, String title, bool done) async {
+  void updateTask(
+      int index,
+      String newName,
+      List<String> newSubtasks,
+      DateTime? newAlarmNotificationDate,
+      Map<String, bool> newOptions,
+      DateTime initDate,
+      String? newNotificationSound) async {
     await Boxes.getTasks().putAt(
-        key,
+        index,
         Task()
-          ..name = title
-          ..isDone = done ? false : true);
+          ..name = newName
+          ..subTasks = newSubtasks
+          ..notificationAndAlarmDate = newAlarmNotificationDate
+          ..options = newOptions
+          ..initDate = initDate
+          ..notificationSound = newNotificationSound ?? 'sound1');
     notifyListeners();
   }
 

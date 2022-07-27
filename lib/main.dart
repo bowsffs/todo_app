@@ -33,9 +33,12 @@ class Roozane extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (context) => TaskData(),
       child: MaterialApp(
+        title: 'Roozaneh',
         debugShowCheckedModeBanner: false,
-        theme: ThemeData(fontFamily: 'Dirooz'),
-        home: TasksScreen(),
+        theme: ThemeData(
+          fontFamily: 'Dirooz',
+        ),
+        home: const TasksScreen(),
       ),
     );
   }

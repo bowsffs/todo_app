@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:todo_app/themes/app_color.dart';
+import 'package:todo_app/modules/app_color.dart';
 
 class CircleButton extends StatelessWidget {
   const CircleButton(
@@ -7,10 +7,16 @@ class CircleButton extends StatelessWidget {
       required this.circleIcon,
       required this.circleButtonFunc,
       this.iconHeight,
+      this.iconWidth,
       this.iconSize,
-      this.iconWidth})
+      this.backgroundColor,
+      this.splashColor,
+      this.iconColor})
       : super(key: key);
 
+  final Color? backgroundColor;
+  final Color? splashColor;
+  final Color? iconColor;
   final double? iconHeight;
   final double? iconWidth;
   final double? iconSize;
@@ -19,33 +25,24 @@ class CircleButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // return CircleAvatar(
-    //   radius: iconWidth ?? 15.0,
-    //   backgroundColor: Colors.white,
-    //   child: InkWell(
-    //     onTap: circleButtonFunc,
-    //     child: Icon(
-    //       circleIcon,
-    //       size: iconHeight ?? 20.0,
-    //       color: AppColor.currentAppColor,
-    //     ),
-    //   ),
-    // );
-    return ClipOval(
-      child: Material(
-        color: Colors.white, // Button color
-        child: InkWell(
-          splashColor:
-              AppColor.currentAppColor.withOpacity(0.6), // Splash color
-          onTap: circleButtonFunc,
-          child: SizedBox(
-            width: iconWidth ?? 27,
-            height: iconHeight ?? 27,
-            child: Icon(
-              circleIcon,
-              color: AppColor.currentAppColor,
-              size: 15,
-            ),
+    return Material(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20.0),
+      ),
+      elevation: 3,
+      color: backgroundColor ?? Colors.white,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(15),
+        splashColor: splashColor ??
+            AppColor.currentAppColor.withOpacity(0.2), // Splash color
+        onTap: circleButtonFunc,
+        child: SizedBox(
+          width: iconWidth ?? 30,
+          height: iconHeight ?? 30,
+          child: Icon(
+            circleIcon,
+            color: iconColor ?? AppColor.currentAppColor.withAlpha(230),
+            size: iconSize ?? 18,
           ),
         ),
       ),

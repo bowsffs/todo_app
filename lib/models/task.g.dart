@@ -18,17 +18,29 @@ class TaskAdapter extends TypeAdapter<Task> {
     };
     return Task()
       ..name = fields[0] as String
-      ..isDone = fields[1] as bool;
+      ..subTasks = (fields[1] as List).cast<String>()
+      ..options = (fields[2] as Map).cast<String, bool>()
+      ..notificationAndAlarmDate = fields[3] as DateTime?
+      ..initDate = fields[4] as DateTime
+      ..notificationSound = fields[5] as String;
   }
 
   @override
   void write(BinaryWriter writer, Task obj) {
     writer
-      ..writeByte(2)
+      ..writeByte(6)
       ..writeByte(0)
       ..write(obj.name)
       ..writeByte(1)
-      ..write(obj.isDone);
+      ..write(obj.subTasks)
+      ..writeByte(2)
+      ..write(obj.options)
+      ..writeByte(3)
+      ..write(obj.notificationAndAlarmDate)
+      ..writeByte(4)
+      ..write(obj.initDate)
+      ..writeByte(5)
+      ..write(obj.notificationSound);
   }
 
   @override

@@ -1,143 +1,114 @@
 import 'package:flutter/material.dart';
-import 'package:todo_app/modules/notification_handler.dart';
-import 'package:todo_app/themes/app_color.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:todo_app/modules/app_color.dart';
+import 'package:todo_app/screens/info_screen.dart';
+import 'package:todo_app/models/task.dart';
 
-class TaskTile extends StatelessWidget {
+class TaskTile extends StatefulWidget {
+  final Task task;
   final dynamic taskKey;
-  bool? isChecked = false;
+  final bool isChecked;
+  final bool isStarred;
   final String taskTitle;
-  final Function(bool?)? checkboxCallback;
-  final Function()? longPressCallBack;
+  final void Function(bool?) tikCheckboxCallback;
+  final void Function() starCheckboxCallback;
+  final Function() longPressCallBack;
+  final int taskIndex;
 
-  TaskTile(
+  const TaskTile(
       {this.taskKey,
-      this.isChecked,
+      required this.task,
+      required this.taskIndex,
+      required this.isChecked,
+      required this.isStarred,
       Key? key,
       required this.taskTitle,
-      this.checkboxCallback,
-      this.longPressCallBack})
+      required this.starCheckboxCallback,
+      required this.tikCheckboxCallback,
+      required this.longPressCallBack})
       : super(key: key);
 
-  DateTime? selectedDate;
+  @override
+  State<TaskTile> createState() => _TaskTileState();
+}
 
-  // Future<void> _selectDate(BuildContext context) async {
-  // final TimeOfDay? picked = await showTimePicker(
-  //   confirmText: 'تایید',
-  //   cancelText: 'لغو',
-  //   hourLabelText: 'ساعت',
-  //   minuteLabelText: 'دقیقه',
-  //   helpText: 'زمان آلارم',
-  //   errorInvalidText: 'لطفا یک زمان صحیح وارد کنید',
-  //   builder: (context, child) {
-  //     return Theme(
-  //       data: Theme.of(context).copyWith(
-  //         colorScheme: ColorScheme.light(
-  //           primary: AppColor.currentAppColor,
-  //         ),
-  //       ),
-  //       child: Directionality(
-  //         textDirection: TextDirection.rtl,
-  //         child: child!,
-  //       ),
-  //     );
-  //   },
-  //   context: context,
-  //   initialTime: TimeOfDay.now(),
-  // );
-  // if (picked != null) {
-  //   // setState(() {
-  //   selectedDate = picked;
-  //   print('${selectedDate!.format(context)}');
-  //   // });
-  // }
-  // }
-
-  Future<void> _getUserSelectedDateTime(BuildContext context) async {
-    DateTime? userSelectedDateTime =
-        await DatePicker.showDateTimePicker(context,
-            showTitleActions: true,
-            theme: DatePickerTheme(
-              // itemStyle:
-              //     TextStyle(color: AppColor.currentAppColor, fontSize: 16),
-              doneStyle: TextStyle(
-                color: AppColor.currentAppColor,
-                fontSize: 16,
-              ),
-            ),
-            minTime: DateTime(DateTime.now().year, 1, 1),
-            maxTime: DateTime(2050, 6, 7), onConfirm: (date) {
-      NotificationApi.showScheduledNotification(
-          id: taskKey,
-          scheduledDate: date,
-          title: 'لطفا فعالیت خود را چک کنید',
-          body: taskTitle,
-          payload: taskTitle);
-    }, currentTime: DateTime.now(), locale: LocaleType.fa);
-  }
-
+class _TaskTileState extends State<TaskTile> {
   @override
   Widget build(BuildContext context) {
     return Material(
       color: Colors.white,
       child: InkWell(
-        splashColor: AppColor.currentAppColor,
         child: Padding(
-          padding: const EdgeInsets.only(bottom: 4.0, top: 4.0),
-          child: ListTile(
-            onLongPress: longPressCallBack,
-            title: Text(
-              taskTitle,
-              textDirection: TextDirection.rtl,
-              style: TextStyle(
-                  decoration: isChecked! ? TextDecoration.lineThrough : null),
-            ),
-            leading: Container(
-              width: 72.0,
-              child: Row(
-                children: [
-                  GestureDetector(
-                    onTap: () async {
-                      await _getUserSelectedDateTime(context);
-                    },
-                    // onTap: () async => await _selectDate(context),
-                    // () async => await showTimePicker(
-                    //   confirmText: 'تایید',
-                    //   cancelText: 'لغو',
-                    //   hourLabelText: 'ساعت',
-                    //   minuteLabelText: 'دقیقه',
-                    //   helpText: 'زمان آلارم',
-                    //   errorInvalidText: 'لطفا یک زمان صحیح وارد کنید',
-                    //   builder: (context, child) {
-                    //     return Theme(
-                    //       data: Theme.of(context).copyWith(
-                    //         colorScheme: ColorScheme.light(
-                    //           primary: AppColor.currentAppColor,
-                    //         ),
-                    //       ),
-                    //       child: Directionality(
-                    //         textDirection: TextDirection.rtl,
-                    //         child: child!,
-                    //       ),
-                    //     );
-                    //   },
-                    //   context: context,
-                    //   initialTime: TimeOfDay.now(),
-                    // ),
-                    child: const Icon(
-                      Icons.notification_add_outlined,
-                      color: Color(0xFF757575),
+          padding: const EdgeInsets.only(bottom: 2, left: 7, right: 7),
+          child: Theme(
+            data: ThemeData(
+                splashColor: AppColor.currentAppColor.withOpacity(0.5),
+                fontFamily: 'Dirooz'),
+            child: Card(
+              shadowColor: AppColor.currentAppColor,
+              elevation: 2,
+              shape: RoundedRectangleBorder(
+                side: const BorderSide(color: Colors.transparent),
+                borderRadius: BorderRadius.circular(15.0),
+              ),
+              child: ListTile(
+                style: ListTileStyle.drawer,
+                shape: RoundedRectangleBorder(
+                  side: const BorderSide(width: 0.2, color: Colors.transparent),
+                  borderRadius: BorderRadius.circular(15.0),
+                ),
+                textColor:
+                    widget.isChecked ? const Color(0xff9e978e) : Colors.black87,
+                tileColor: Colors.white,
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => InfoScreen(
+                      taskIndex: widget.taskIndex,
+                      taskKey: widget.taskKey,
                     ),
                   ),
-                  Checkbox(
-                    activeColor: AppColor.currentAppColor,
-                    value: isChecked,
-                    onChanged: checkboxCallback,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(4.0),
-                    ),
+                ),
+                onLongPress: widget.longPressCallBack,
+                title: Text(
+                  widget.taskTitle,
+                  textDirection: TextDirection.rtl,
+                  style: TextStyle(
+                    decoration:
+                        widget.isChecked ? TextDecoration.lineThrough : null,
                   ),
-                ],
+                ),
+                leading: SizedBox(
+                  width: 72.0,
+                  child: Row(
+                    children: [
+                      ClipOval(
+                        child: Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: widget.starCheckboxCallback,
+                            child: Icon(
+                              widget.isStarred
+                                  ? Icons.star_rounded
+                                  : Icons.star_border_rounded,
+                              color: widget.isStarred
+                                  ? AppColor.currentAppColor
+                                  : const Color(0xff606060),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Checkbox(
+                        activeColor: AppColor.currentAppColor,
+                        value: widget.isChecked,
+                        onChanged: widget.tikCheckboxCallback,
+                        shape: RoundedRectangleBorder(
+                          side: const BorderSide(color: Color(0xFF757575)),
+                          borderRadius: BorderRadius.circular(4.0),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
               ),
             ),
           ),
